@@ -7,18 +7,65 @@ from stellar_sdk import *
 
 
 def welcome():
-    welcome_text = fontstyle.apply("Welcome to Tellus' Airdrop v.0.2\n", 'BOLD/purple/CYAN_BG')
+    welcome_text = fontstyle.apply("Welcome to Tellus' Airdrop v.0.3\n", 'BOLD/purple/CYAN_BG')
     print(welcome_text)
     main_menu()
 
 
 def main_menu():
-    print("Main Menu\n (A) Schedule Airdrop\n (B) Else")
+    print("Main Menu\n (A) Schedule Airdrop\n (B) Create test account")
     answer = input().upper()
     if answer == "A":
         payment()
-    elif answer == "B":
+    if answer != "B":
+        main_menu()
+    else:
+        create_account()
+
+
+def back_to_menu():
+    answer = input("\nGo back to Main Menu? Y/N\n").upper()
+    if answer == "Y":
+        welcome()
+    elif answer:
         pass
+
+
+def create_account():
+    keypair = Keypair.random()
+
+    print("Keypair generated successfully\n")
+    print("Public: ", keypair.public_key)
+    print("Secret: ", keypair.secret)
+
+    url = "https://friendbot.stellar.org"
+    response = requests.get(url, params={"addr": keypair.public_key})
+    print("\nServer:\n", response)
+    back_to_menu()
+
+
+def countdown(h, m, s):
+    # Calculate the total number of seconds
+    total_seconds = h * 3600 + m * 60 + s
+
+    # While loop that checks if total_seconds reaches zero
+    # If not zero, decrement total time by one second
+    while total_seconds > 0:
+        # Timer represents time left on countdown
+        timer = datetime.timedelta(seconds=total_seconds)
+
+        # Prints the time left on the timer
+        print(timer, end="\r")
+
+        # Delays the program one second
+        time.sleep(1)
+
+        # Reduces total time by one second
+        total_seconds -= 1
+
+    print("\n ✈️ Airdrop executed")
+
+    # Inputs for hours, minutes, seconds on timer
 
 
 def payment():
@@ -31,6 +78,11 @@ def payment():
     check_address = input("\nIs this correct? Y/N :").upper()
     if check_address == "Y":
         print("\nPublic Key entered successfully\n")
+        h = input("Enter the time in hours: ")
+        m = input("Enter the time in minutes: ")
+        s = input("Enter the time in seconds: ")
+        print("\nAirdrop scheduled successfully! ⏰")
+        countdown(int(h), int(m), int(s))
 
     server = Server(horizon_url="https://horizon-testnet.stellar.org")
 
@@ -57,6 +109,8 @@ def payment():
 
     response = server.submit_transaction(transaction)
     print(json.dumps(response, indent=4))
+    print("💸 Transaction Completed!")
+    back_to_menu()
 
 
 welcome()
