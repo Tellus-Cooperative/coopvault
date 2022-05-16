@@ -20,13 +20,8 @@ def create_coop():
 
     root_account = server.load_account(account_id=root_keypair.public_key)
 
-    """secondary_public_key = input("Enter Public Key: ").upper()
-    """
-    """secondary_keypair = Keypair.from_secret(
-    "SAV2G4KFDGJJS7DNXTQDKVBZ2QKLBLU7UFIB4FZXZMKSDS53JIIEHGPC")"""
-
-    secondary_signer = Signer.ed25519_public_key(account_id=input("Enter Public Key: ").upper(), weight=1
-                                                 )
+    secondary_signer = Signer.ed25519_public_key(account_id=input("🔑 Enter Public Key: ").upper(), weight=1
+    )
 
     transaction = (
         TransactionBuilder(
