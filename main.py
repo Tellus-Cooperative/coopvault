@@ -18,19 +18,19 @@ def main_menu():
     if answer == "A":
         payment()
     if answer == "B":
-        main_menu()
+        create_account()
     if answer == "C":
         create_coop()
     else:
-        create_account()
+        main_menu()
 
 
 def back_to_menu():
     answer = input("\nGo back to Main Menu? Y/N\n").upper()
     if answer == "Y":
         welcome()
-    elif answer:
-        pass
+    else:
+        quit()
 
 
 def create_account():
