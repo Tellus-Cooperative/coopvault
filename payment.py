@@ -1,24 +1,11 @@
 import json
 from stellar_sdk import Asset, Keypair, Network, Server, TransactionBuilder
 
-
-def create_account():
-    import requests
-
-    from stellar_sdk import Keypair
-
-    keypair = Keypair.random()
-    url = "https://friendbot.stellar.org"
-    _response = requests.get(url, params={"addr": keypair.public_key})
-    return keypair
-
-
-example_keypair = create_account()
-source_secret_key = example_keypair.secret
+source_secret_key = "SBZPHIQI4GRLVLUAGEFW4U5RXDGSDG6HM4TN677GHTENCS6IQNSB33C2"
 source_keypair = Keypair.from_secret(source_secret_key)
 source_public_key = source_keypair.public_key
 
-receiver_public_key = example_keypair.public_key
+receiver_public_key = "GDBBYISVGXL4CWVBRNSBIHDC6RCQ37NWUVFWI4F7M5LBW2QSB4JYWGYH"
 
 server = Server(horizon_url="https://horizon-testnet.stellar.org")
 
@@ -33,7 +20,6 @@ transaction = (
         base_fee=base_fee,
     )
         .add_text_memo("TEST PAYMENT")
-
         .append_payment_op(receiver_public_key, Asset.native(), "350.1234567")
         .set_timeout(30)
         .build()
