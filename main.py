@@ -13,7 +13,7 @@ def welcome():
 
 
 def main_menu():
-    print("Main Menu\n (A) Schedule Airdrop\n (B) Create test account\n (C) Create test Cooperative Vault")
+    print("Main Menu\n (A) Schedule Airdrop\n (B) Create test account\n (C) Create test Cooperative Vault\n (D) New Cooperative Asset")
     answer = input().upper()
     if answer == "A":
         payment()
@@ -21,6 +21,8 @@ def main_menu():
         create_account()
     if answer == "C":
         create_coop()
+    if answer == "D":
+        coop_asset()
     else:
         main_menu()
 
@@ -153,6 +155,64 @@ def payment():
     response = server.submit_transaction(transaction)
     print(json.dumps(response, indent=4))
     print("💸 Transaction Completed!")
+    back_to_menu()
+
+def coop_asset():
+    server = Server(horizon_url="https://horizon-testnet.stellar.org")
+
+    # Keys for accounts to issue and receive the new asset
+    issuing_keypair = Keypair.from_secret(
+        "SBZW7VWGVK5DJGKL42IHN6YLOEM6WYHC3YM3FLRIIJO7YFX6UVDRLLS2"
+    )
+    issuing_public = issuing_keypair.public_key
+
+    distributor_keypair = Keypair.from_secret(
+        "SAMISJ7KMPDI62U2L4NXPAAWKF6AOJIOZ7BDE5WEQUVPLQOCFRBQJWZA"
+    )
+    distributor_public = distributor_keypair.public_key
+
+    # Transactions require a valid sequence number that is specific to this account.
+    # We can fetch the current sequence number for the source account from Horizon.
+    distributor_account = server.load_account(distributor_public)
+
+    # Create an object to represent the new asset
+    coop_asset = Asset("COOPXTEST2", issuing_public)
+
+    # First, the receiving account must trust the asset
+    trust_transaction = (
+        TransactionBuilder(
+            source_account=distributor_account,
+            network_passphrase=Network.TESTNET_NETWORK_PASSPHRASE,
+            base_fee=100,
+        )
+            .append_change_trust_op(asset=coop_asset)
+            .set_timeout(30)
+            .build()
+    )
+
+    trust_transaction.sign(distributor_keypair)
+    resp = server.submit_transaction(trust_transaction)
+    print(f"Change Trust Op Resp:\n{resp}")
+    print("-" * 32)
+
+    issuing_account = server.load_account(issuing_public)
+    # Second, the issuing account actually sends a payment using the asset.
+    # We recommend that you use the distribution account to distribute assets and
+    # add more security measures to the issue account. Other acceptances should also
+    # add a trust line to accept assets like the distribution account.
+    payment_transaction = (
+        TransactionBuilder(
+            source_account=issuing_account,
+            network_passphrase=Network.TESTNET_NETWORK_PASSPHRASE,
+            base_fee=100,
+        )
+            .append_payment_op(destination=distributor_public, amount="420", asset=coop_asset)
+            .set_timeout(30)
+            .build()
+    )
+    payment_transaction.sign(issuing_keypair)
+    resp = server.submit_transaction(payment_transaction)
+    print(f"Payment Op Resp:\n{resp}")
     back_to_menu()
 
 
