@@ -1,0 +1,4 @@
+fontstyle==1.0.1.2
+json5==0.9.6
+stellar-sdk==7.0.0
+requests==2.27.1
