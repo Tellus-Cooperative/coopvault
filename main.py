@@ -8,7 +8,7 @@ from stellar_sdk import *
 # Imports setup file with account information
 import setup
 
-
+# Defines CLI Welcome menu
 def welcome():
 
     welcome_text = fontstyle.apply("Welcome to Tellus' Airdrop v.0.3.1\n", 'BOLD/purple/CYAN_BG')
@@ -16,6 +16,7 @@ def welcome():
     main_menu()
 
 
+# Defines CLI main menu options
 def main_menu():
     print("Main Menu\n (A) Schedule Airdrop\n (B) Create test account\n (C) Create test Cooperative Vault\n (D) New Cooperative Asset")
     answer = input().upper()
@@ -31,6 +32,7 @@ def main_menu():
         main_menu()
 
 
+# Defines prompt to go back to main menu
 def back_to_menu():
     answer = input("\nGo back to Main Menu? Y/N\n").upper()
     if answer == "Y":
@@ -39,6 +41,7 @@ def back_to_menu():
         quit()
 
 
+# Creates test account and funds it with 10,000 XLM by calling Friendbot!
 def create_account():
     keypair = Keypair.random()
 
@@ -52,6 +55,8 @@ def create_account():
     back_to_menu()
 
 
+# Creates a new test account
+# Prepares de creation of a 2 signature account. Asks for input of a new signer's public key.
 def create_coop():
     keypair = Keypair.random()
 
@@ -93,11 +98,9 @@ def create_coop():
     response = server.submit_transaction(transaction)
     print(json.dumps(response, indent=4))
 
-
-
     back_to_menu()
 
-
+#Creates internal countdown
 def countdown(h, m, s):
     # Calculate the total number of seconds
     total_seconds = h * 3600 + m * 60 + s
@@ -120,6 +123,7 @@ def countdown(h, m, s):
     print("\n ✈️ Airdrop executed")
 
 
+# Defines a timed payment
 def payment():
     source_secret_key = "SBZPHIQI4GRLVLUAGEFW4U5RXDGSDG6HM4TN677GHTENCS6IQNSB33C2"
     source_keypair = Keypair.from_secret(source_secret_key)
@@ -164,6 +168,7 @@ def payment():
     print("💸 Transaction Completed!")
     back_to_menu()
 
+# Creates a new asset out of a multi-signature account
 def coop_asset():
     server = Server(horizon_url="https://horizon-testnet.stellar.org")
 
