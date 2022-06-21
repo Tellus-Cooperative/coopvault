@@ -4,23 +4,9 @@ import requests
 import time
 import datetime
 from stellar_sdk import *
-import os
 
-#CORE ISSUER
-core_iss_public = os.environ.get('CORE_ISS_PUBLIC')
-core_iss_secret = os.environ.get('CORE_ISS_SECRET')
-
-#CORE DISTRIBUTOR
-core_dist_public = os.environ.get('CORE_DIST_PUBLIC')
-core_dist_secret = os.environ.get('CORE_DIST_SECRET')
-
-#ISSX
-issx_public = os.environ.get('ISSX_PUBLIC')
-issx_secret = os.environ.get('ISSX_SECRET')
-
-#DISTX TEST
-distx_public = os.environ.get('DISTX_PUBLIC')
-distx_secret = os.environ.get('DISTX_SECRET')
+# Imports setup file with account information
+import setup
 
 
 def welcome():
